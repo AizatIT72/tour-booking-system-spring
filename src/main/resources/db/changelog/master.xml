@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--suppress XmlUnusedNamespaceDeclaration -->
+<databaseChangeLog
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.14.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <include relativeToChangelogFile="true" file="001-schema-users.sql"/>
+    <include relativeToChangelogFile="true" file="002-schema-guide-profiles.sql"/>
+    <include relativeToChangelogFile="true" file="003-schema-categories.sql"/>
+    <include relativeToChangelogFile="true" file="004-data-categories.sql"/>
+    <include relativeToChangelogFile="true" file="005-schema-excursions.sql"/>
+    <include relativeToChangelogFile="true" file="006-schema-excursions-categories.sql"/>
+    <include relativeToChangelogFile="true" file="007-schema-excursion-dates.sql"/>
+    <include relativeToChangelogFile="true" file="008-schema-bookings.sql"/>
+    <include relativeToChangelogFile="true" file="009-schema-subscriptions.sql"/>
+    <include relativeToChangelogFile="true" file="010-schema-reviews.sql"/>
+    <include relativeToChangelogFile="true" file="011-schema-notifications.sql"/>
+
+</databaseChangeLog>

@@ -1,4 +1,4 @@
-package ru.kpfu.itis.tourbookingsystemspring.entity;
+package ru.kpfu.itis.tourbookingsystemspring.entity.Enum;
 
 public enum NotificationType {
     NEW_BOOKING,

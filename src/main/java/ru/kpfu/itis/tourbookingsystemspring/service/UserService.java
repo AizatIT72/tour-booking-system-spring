@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kpfu.itis.tourbookingsystemspring.entity.Role;
+import ru.kpfu.itis.tourbookingsystemspring.entity.Enum.Role;
 import ru.kpfu.itis.tourbookingsystemspring.entity.User;
 import ru.kpfu.itis.tourbookingsystemspring.form.RegistrationForm;
 import ru.kpfu.itis.tourbookingsystemspring.repository.UserRepository;

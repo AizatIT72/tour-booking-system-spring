@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>${msg.getMessage("common.app.name")}</title>
-    <link rel="stylesheet" href="/static/css/auth.css">
+    <link rel="stylesheet" href="/css/auth.css">
 </head>
 <body>
 

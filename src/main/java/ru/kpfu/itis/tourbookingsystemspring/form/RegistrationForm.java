@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import ru.kpfu.itis.tourbookingsystemspring.entity.Role;
+import ru.kpfu.itis.tourbookingsystemspring.entity.Enum.Role;
 
 @Getter
 @Setter

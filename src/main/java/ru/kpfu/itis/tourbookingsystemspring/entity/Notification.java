@@ -1,11 +1,8 @@
 package ru.kpfu.itis.tourbookingsystemspring.entity;
 
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import ru.kpfu.itis.tourbookingsystemspring.entity.Enum.NotificationType;
+import lombok.*;
+import ru.kpfu.itis.tourbookingsystemspring.entity.enums.NotificationType;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +11,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @EqualsAndHashCode(of = "id")
 public class Notification {
 

@@ -1,35 +1,22 @@
-<!DOCTYPE html>
-<#assign msg = springMacroRequestContext>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <title>${msg.getMessage("common.app.name")}</title>
-    <link rel="stylesheet" href="/css/auth.css">
-</head>
-<body>
+<#import "layout/base.ftlh" as layout>
+<#import "layout/macros.ftlh" as ui>
 
-<div class="lang-switch">
-    <a href="?lang=ru">RU</a> | <a href="?lang=en">EN</a>
-</div>
+<@layout.page title=springMacroRequestContext.getMessage("home.title")>
 
-<div class="card">
-    <div class="card-header">
-        <h1>${msg.getMessage("common.app.name")}</h1>
-        <p>${msg.getMessage("home.title")}</p>
-    </div>
-    <div class="card-body">
-        <p style="margin-bottom: 16px;">
-            ${msg.getMessage("home.greeting")}, <strong>${user.fullName}</strong>!
-        </p>
-        <p style="margin-bottom: 8px;">${msg.getMessage("home.email")}: ${user.email}</p>
-        <p style="margin-bottom: 8px;">${msg.getMessage("home.username")}: ${user.username}</p>
-        <p style="margin-bottom: 24px;">${msg.getMessage("home.role")}: ${user.role.name()}</p>
+    <@ui.card title=springMacroRequestContext.getMessage("home.greeting") + ", " + currentUser.fullName + "!">
+        <p><strong>${springMacroRequestContext.getMessage("home.email")}:</strong> ${currentUser.email}</p>
+        <p><strong>${springMacroRequestContext.getMessage("home.username")}:</strong> ${currentUser.username}</p>
+        <p><strong>${springMacroRequestContext.getMessage("home.role")}:</strong> ${springMacroRequestContext.getMessage("role." + currentUser.role)}</p>
+    </@ui.card>
 
-        <form action="/logout" method="post">
-            <input type="hidden" name="_csrf" value="${_csrf.token}"/>
-            <button type="submit" class="btn">${msg.getMessage("common.logout")}</button>
-        </form>
-    </div>
-</div>
-</body>
-</html>
+    <#if currentUser.role == 'TOURIST'>
+        <@ui.alert type="info">
+            ${springMacroRequestContext.getMessage("home.welcome.tourist")}
+        </@ui.alert>
+    <#elseif currentUser.role == 'GUIDE'>
+        <@ui.alert type="info">
+            ${springMacroRequestContext.getMessage("home.welcome.guide")}
+        </@ui.alert>
+    </#if>
+
+</@layout.page>

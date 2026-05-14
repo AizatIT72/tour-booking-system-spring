@@ -31,5 +31,5 @@ public class ExcursionDate {
     private Integer availableSlots;
 
     @Column(name = "is_available", nullable = false)
-    private Boolean isAvailable = true;
+    private boolean isAvailable = true;
 }

@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.kpfu.itis.tourbookingsystemspring.entity.Enum.Role;
+import ru.kpfu.itis.tourbookingsystemspring.entity.enums.Role;
 
 import java.time.LocalDateTime;
 

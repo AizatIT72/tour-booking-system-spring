@@ -10,8 +10,8 @@ import ru.kpfu.itis.tourbookingsystemspring.security.CustomUserDetails;
 public class HomeController {
 
     @GetMapping("/home")
-    public String home(@AuthenticationPrincipal CustomUserDetails currentUser, Model model) {
-        model.addAttribute("user", currentUser.getUser());
+    public String home(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
+        model.addAttribute("currentUser", userDetails.getUser());
         return "home";
     }
 }

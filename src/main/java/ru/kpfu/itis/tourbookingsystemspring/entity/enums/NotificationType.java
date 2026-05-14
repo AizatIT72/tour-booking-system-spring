@@ -1,0 +1,10 @@
+package ru.kpfu.itis.tourbookingsystemspring.entity.enums;
+
+public enum NotificationType {
+    NEW_BOOKING,
+    BOOKING_CANCELLED,
+    NEW_REVIEW,
+    NEW_SUBSCRIBER,
+    GUIDE_REPLY,
+    SYSTEM
+}

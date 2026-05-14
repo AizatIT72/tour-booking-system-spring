@@ -12,6 +12,35 @@
         </@ui.alert>
     </#if>
 
+    <#if cancelSuccess??>
+        <@ui.alert type="success">
+            ${msg.getMessage("booking.cancel.success")}
+        </@ui.alert>
+    </#if>
+
+    <div class="booking-tabs">
+        <a href="/my-bookings"
+           class="booking-tab <#if !currentStatus??>booking-tab--active</#if>">
+            ${msg.getMessage("booking.filter.all")}
+        </a>
+        <a href="/my-bookings?status=PENDING"
+           class="booking-tab <#if currentStatus?? && currentStatus?string == 'PENDING'>booking-tab--active</#if>">
+            ${msg.getMessage("booking.status.PENDING")}
+        </a>
+        <a href="/my-bookings?status=CONFIRMED"
+           class="booking-tab <#if currentStatus?? && currentStatus?string == 'CONFIRMED'>booking-tab--active</#if>">
+            ${msg.getMessage("booking.status.CONFIRMED")}
+        </a>
+        <a href="/my-bookings?status=COMPLETED"
+           class="booking-tab <#if currentStatus?? && currentStatus?string == 'COMPLETED'>booking-tab--active</#if>">
+            ${msg.getMessage("booking.status.COMPLETED")}
+        </a>
+        <a href="/my-bookings?status=CANCELLED"
+           class="booking-tab <#if currentStatus?? && currentStatus?string == 'CANCELLED'>booking-tab--active</#if>">
+            ${msg.getMessage("booking.status.CANCELLED")}
+        </a>
+    </div>
+
     <#if !bookings?has_content>
         <@ui.empty messageKey="booking.my.empty"/>
     <#else>
@@ -36,6 +65,17 @@
                                 <small>${msg.getMessage("booking.special.requests")}:</small>
                                 <p>${b.specialRequests()}</p>
                             </div>
+                        </#if>
+
+                        <#if b.status()?string == 'PENDING' || b.status()?string == 'CONFIRMED'>
+                            <form method="post" action="/my-bookings/${b.id()}/cancel"
+                                  class="mt-2"
+                                  onsubmit="return confirm('${msg.getMessage("booking.cancel.confirm")}');">
+                                <@ui.csrf/>
+                                <button type="submit" class="btn-danger btn-sm">
+                                    ${msg.getMessage("booking.cancel.button")}
+                                </button>
+                            </form>
                         </#if>
                     </div>
                     <div class="booking-status">

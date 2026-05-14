@@ -9,10 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.kpfu.itis.tourbookingsystemspring.entity.enums.BookingStatus;
 import ru.kpfu.itis.tourbookingsystemspring.form.BookingForm;
 import ru.kpfu.itis.tourbookingsystemspring.security.CustomUserDetails;
 import ru.kpfu.itis.tourbookingsystemspring.service.BookingService;
@@ -76,12 +75,25 @@ public class BookingController {
 
     @GetMapping("/my-bookings")
     @PreAuthorize("hasRole('TOURIST')")
-    public String myBookings(@AuthenticationPrincipal CustomUserDetails userDetails,
+    public String myBookings(@RequestParam(value = "status", required = false) BookingStatus statusFilter,
+                             @AuthenticationPrincipal CustomUserDetails userDetails,
                              Model model) {
-        log.debug("GET /my-bookings by={}", userDetails.getUsername());
+        log.debug("GET /my-bookings by={}, filter={}", userDetails.getUsername(), statusFilter);
 
         model.addAttribute("currentUser", userDetails.getUser());
-        model.addAttribute("bookings", bookingService.getBookingsOfTourist(userDetails.getUser().getId()));
+        model.addAttribute("bookings", bookingService.getBookingsOfTourist(userDetails.getId(), statusFilter));
+        model.addAttribute("currentStatus", statusFilter);
         return "booking/my-bookings";
+    }
+
+    @PostMapping("/my-bookings/{id}/cancel")
+    @PreAuthorize("hasRole('TOURIST')")
+    public String cancelBooking(@PathVariable Long id,
+                                @AuthenticationPrincipal CustomUserDetails userDetails,
+                                RedirectAttributes redirectAttributes) {
+        log.debug("POST /my-bookings/{}/cancel by={}", id, userDetails.getUsername());
+        bookingService.cancelBooking(id, userDetails.getId());
+        redirectAttributes.addFlashAttribute("cancelSuccess", true);
+        return "redirect:/my-bookings";
     }
 }

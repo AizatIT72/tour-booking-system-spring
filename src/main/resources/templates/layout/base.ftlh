@@ -1,13 +1,5 @@
 <#import "navbar.ftlh" as nav>
 
-<#--
-  Общий каркас всех страниц.
-  Использование:
-    <#import "layout/base.ftlh" as layout>
-    <@layout.page title="Заголовок">
-        ... контент ...
-    </@layout.page>
--->
 <#macro page title="">
     <#assign msg = springMacroRequestContext>
     <!DOCTYPE html>
@@ -17,6 +9,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title><#if title?has_content>${title} — </#if>${msg.getMessage("common.app.name")}</title>
         <link rel="stylesheet" href="/css/app.css">
+        <meta name="_csrf" content="${_csrf.token}"/>
+        <meta name="_csrf_header" content="${_csrf.headerName}"/>
     </head>
     <body>
 

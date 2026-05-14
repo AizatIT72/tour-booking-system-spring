@@ -21,6 +21,7 @@ import ru.kpfu.itis.tourbookingsystemspring.repository.NotificationRepository;
 import ru.kpfu.itis.tourbookingsystemspring.service.BookingService;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Slf4j
@@ -74,6 +75,77 @@ public class BookingServiceImpl implements BookingService {
         return bookingRepository.findAllByTouristId(touristId).stream()
                 .map(bookingMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BookingDto> getBookingsOfTourist(Long touristId, BookingStatus statusFilter) {
+        log.debug("Loading bookings: tourist={}, filter={}", touristId, statusFilter);
+        List<Booking> bookings = (statusFilter == null)
+                ? bookingRepository.findAllByTouristId(touristId)
+                : bookingRepository.findAllByTouristIdAndStatus(touristId, statusFilter);
+        return bookings.stream().map(bookingMapper::toDto).toList();
+    }
+
+    @Override
+    @Transactional
+    public void cancelBooking(Long bookingId, Long touristId) {
+        log.info("Cancel booking: id={}, tourist={}", bookingId, touristId);
+
+        Booking booking = bookingRepository.findByIdWithDetails(bookingId)
+                .orElseThrow(() -> {
+                    log.warn("Booking not found: id={}", bookingId);
+                    return new EntityNotFoundException("error.booking.not.found");
+                });
+
+        validateCancellation(booking, touristId);
+
+        returnSlots(booking);
+        booking.setStatus(BookingStatus.CANCELLED);
+        notifyGuideAboutCancellation(booking);
+
+        log.info("Booking cancelled: id={}, slots returned={}", bookingId, booking.getParticipantsCount());
+    }
+
+    private void validateCancellation(Booking booking, Long touristId) {
+        if (!booking.getTourist().getId().equals(touristId)) {
+            log.warn("Tourist {} tried to cancel booking {} of tourist {}",
+                    touristId, booking.getId(), booking.getTourist().getId());
+            throw new ru.kpfu.itis.tourbookingsystemspring.exception.AccessDeniedException("error.access.denied");
+        }
+        if (booking.getStatus() == BookingStatus.CANCELLED) {
+            throw new ValidationException("error.booking.already.cancelled");
+        }
+        if (booking.getStatus() == BookingStatus.COMPLETED) {
+            throw new ValidationException("error.booking.already.completed");
+        }
+        if (booking.getExcursionDate().getDateTime().isBefore(LocalDateTime.now())) {
+            throw new ValidationException("error.booking.past.date");
+        }
+    }
+
+    private void returnSlots(Booking booking) {
+        ExcursionDate date = booking.getExcursionDate();
+        date.setAvailableSlots(date.getAvailableSlots() + booking.getParticipantsCount());
+        date.setAvailable(true);
+    }
+
+    private void notifyGuideAboutCancellation(Booking booking) {
+        Notification notification = Notification.builder()
+                .recipient(booking.getExcursionDate().getExcursion().getGuide())
+                .title("Отмена бронирования")
+                .message(String.format(
+                        "%s отменил бронь на «%s» (%s)",
+                        booking.getTourist().getFullName(),
+                        booking.getExcursionDate().getExcursion().getTitle(),
+                        booking.getExcursionDate().getDateTime().format(
+                                java.time.format.DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")
+                        )
+                ))
+                .type(NotificationType.BOOKING_CANCELLED)
+                .isRead(false)
+                .build();
+        notificationRepository.save(notification);
     }
 
     private void validateAvailability(ExcursionDate date, int participants) {
